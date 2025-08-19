@@ -1,0 +1,11 @@
+# Install Helm on your Ubuntu and These are cited directly from the Helm official docs
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+sudo apt-get install apt-transport-https --yes
+
+# This might be the output u get displayed in the terminal so check and then execute accordingly
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+
+sudo apt-get update
+sudo apt-get install helm
+
+# For latest helm version check its official docs 
