@@ -1,0 +1,72 @@
+STEP 1: 
+# On Grafana -> Alerting -> Create new alert rule
+paste this query ->>  node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.8 
+IS_BELOW AND 0.5
+
+STEP 2: Create New Folder (Section 3)
+
+Click "+ New folder" button
+Name: Type Memory Alerts
+Click Create
+
+Step 3: Set Evaluation Behavior (Section 4)
+A. Select evaluation group:
+
+In the dropdown that says "Select an evaluation group...", click it
+Click "+ New evaluation group"
+Name: memory-checks
+Interval: 1m (1 minute)
+Click Create
+
+B. Pending period:
+
+You see 1m is selected
+Click None instead (for immediate alerts)
+
+C. Keep firing for:
+
+You see 0s is selected
+Click None (this is perfect)
+
+Step 4: Create Email Contact Point
+Click "View or create contact points" (the blue link you see)
+This will open a new tab/page to create the email contact point.
+Step 2: In the Contact Points Page
+
+Click "+ Add contact point"
+Name: Email Alerts
+Contact point type: Select Email
+Addresses: Enter soniyakothari1511@gmail.com
+Click Test (this will test if your Gmail setup from helm works)
+If test works → Click Save
+
+---- do this if test does not work-------
+helm upgrade kind-prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --reuse-values \
+  --set grafana.env.GF_SMTP_ENABLED=true \
+  --set grafana.env.GF_SMTP_HOST="smtp.gmail.com:587" \
+  --set grafana.env.GF_SMTP_USER="soniyakothari1511@gmail.com" \
+  --set grafana.env.GF_SMTP_PASSWORD="16-char-pass" \
+  --set grafana.env.GF_SMTP_FROM_ADDRESS="soniyakothari1511@gmail.com" \
+  --set grafana.env.GF_SMTP_FROM_NAME="Grafana Monitoring"
+
+# RESTART IF PORT-FORWARD STOPPED
+
+# Check if SMTP environment variables are loaded in Grafana:
+kubectl exec -it deployment/kind-prometheus-grafana -n monitoring -- env | grep GF_SMTP
+
+Step 5: Go Back to Alert Rule
+
+Go back to your alert rule tab
+Refresh the page or click the Contact point dropdown
+You should now see "Email Alerts" in the dropdown
+Select it
+
+Step 6: Add Summary (Section 6)
+
+In the "Enter a summary..." box, type:
+Memory usage is high - Available memory below 50%
+
+Step 7: Save the Alert
+Scroll down and click "Save rule and exit"
