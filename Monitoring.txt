@@ -20,3 +20,7 @@ sum (container_memory_usage_bytes{namespace="default"}) by (pod)
 
 sum(rate(container_network_receive_bytes_total{namespace="default"}[5m])) by (pod)
 sum(rate(container_network_transmit_bytes_total{namespace="default"}[5m])) by (pod)
+
+sum(rate(container_cpu_usage_seconds_total{namespace="notes-app"}[5m])) by (container)
+container_memory_working_set_bytes{namespace="monitoring",pod=~"prometheus-.*"}
+up{namespace=~"notes-app|monitoring|argocd"}
